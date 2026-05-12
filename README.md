@@ -4,9 +4,8 @@ Sistema web para gerenciamento de biblioteca pessoal de jogos.
 
 ## Funcionalidades
 - Adicionar jogos à biblioteca
-- Marcar jogos como favoritos
-- Registrar progresso 
-- Avaliar jogos
+- Marcar jogos como favoritos 
+- Fazer review de jogos
 - Criar wishlist
 
 ## Classes do domínio
@@ -41,3 +40,16 @@ Sistema web para gerenciamento de biblioteca pessoal de jogos.
 - jogo
 - comentario
 - nota
+
+## Relações entre as classes
+
+### Associação
+- User ↔ Review (Um usuário pode criar várias reviews)
+
+- Game ↔ Review (Um jogo pode possuir várias reviews)
+
+### Agregação
+- User ◇── Library (A biblioteca pertence ao usuário, mas pode ser tratada separadamente)
+
+### Composição
+- Library ◆── LibraryItem (Os itens da biblioteca dependem da existência da biblioteca. Se a biblioteca for apagada, os itens também são.)
