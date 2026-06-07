@@ -1,0 +1,42 @@
+/* Ajustes complementares ao Bootstrap */
+
+body {
+  min-height: 100vh;
+}
+
+.card {
+  height: 100%;
+}
+
+.list-group-item {
+  transition: background-color 0.15s ease;
+}
+
+.list-group-item:hover {
+  background-color: #f8f9fa;
+}
+
+.list-group-item .btn {
+  white-space: nowrap;
+  min-width: 90px;
+}
+
+#lista-users li,
+#lista-games li,
+#lista-reviews li {
+  word-break: break-word;
+}
+
+#game-descricao,
+#review-comentario {
+  resize: none;
+  height: 38px;
+}
+
+#lista-reviews .list-group-item {
+  align-items: flex-start !important;
+}
+
+#lista-reviews .list-group-item > div {
+  flex: 1;
+}
