@@ -1,60 +1,131 @@
-let games = [];
-let nextId = 1;
+import { db } from "../db.js";
 
 export const gameModel = {
   listarTodos() {
-    return games;
+    const stmt = db.prepare(`
+      SELECT
+        id,
+        titulo,
+        descricao,
+        capa,
+        genero,
+        data_lancamento AS dataLancamento
+      FROM games
+    `);
+
+    return stmt.all();
   },
 
   buscarPorId(id) {
-    return games.find((g) => g.id === id) || null;
+    const stmt = db.prepare(`
+      SELECT
+        id,
+        titulo,
+        descricao,
+        capa,
+        genero,
+        data_lancamento AS dataLancamento
+      FROM games
+      WHERE id = ?
+    `);
+
+    return stmt.get(id) || null;
   },
 
   buscarPorTitulo(titulo) {
-    return (
-      games.find((g) => g.titulo.toLowerCase() === titulo.toLowerCase()) || null
-    );
+    const stmt = db.prepare(`
+      SELECT
+        id,
+        titulo,
+        descricao,
+        capa,
+        genero,
+        data_lancamento AS dataLancamento
+      FROM games
+      WHERE LOWER(titulo) = LOWER(?)
+    `);
+
+    return stmt.get(titulo) || null;
   },
 
   existeTitulo(titulo) {
-    return games.some((g) => g.titulo.toLowerCase() === titulo.toLowerCase());
+    const stmt = db.prepare(`
+      SELECT 1
+      FROM games
+      WHERE LOWER(titulo) = LOWER(?)
+    `);
+
+    return !!stmt.get(titulo);
   },
 
   inserir({ titulo, descricao, capa = null, genero, dataLancamento }) {
-    const novo = {
-      id: nextId++,
+    const stmt = db.prepare(`
+      INSERT INTO games (
+        titulo,
+        descricao,
+        capa,
+        genero,
+        data_lancamento
+      )
+      VALUES (?, ?, ?, ?, ?)
+    `);
+
+    const result = stmt.run(titulo, descricao, capa, genero, dataLancamento);
+
+    return {
+      id: result.lastInsertRowid,
       titulo,
       descricao,
       capa,
       genero,
       dataLancamento,
     };
-
-    games.push(novo);
-    return novo;
   },
 
   atualizar(id, dados) {
-    const idx = games.findIndex((g) => g.id === id);
+    const gameAtual = this.buscarPorId(id);
 
-    if (idx === -1) {
+    if (!gameAtual) {
       return null;
     }
 
-    games[idx] = {
-      ...games[idx],
+    const gameAtualizado = {
+      ...gameAtual,
       ...dados,
-      id, // garante que o ID não seja alterado
+      id,
     };
 
-    return games[idx];
+    const stmt = db.prepare(`
+      UPDATE games
+      SET
+        titulo = ?,
+        descricao = ?,
+        capa = ?,
+        genero = ?,
+        data_lancamento = ?
+      WHERE id = ?
+    `);
+
+    stmt.run(
+      gameAtualizado.titulo,
+      gameAtualizado.descricao,
+      gameAtualizado.capa,
+      gameAtualizado.genero,
+      gameAtualizado.dataLancamento,
+      id,
+    );
+
+    return gameAtualizado;
   },
 
   remover(id) {
-    const tamanhoAntes = games.length;
+    const stmt = db.prepare(`
+      DELETE FROM games
+      WHERE id = ?
+    `);
 
-    games = games.filter((g) => g.id !== id);
+    const result = stmt.run(id);
 
-    return games.length < tamanhoAntes;
+    return result.changes > 0;
   },
 };

@@ -1,57 +1,124 @@
-let users = [];
-let nextId = 1;
+import { db } from "../db.js";
 
 export const userModel = {
   listarTodos() {
-    return users;
+    const stmt = db.prepare(`
+      SELECT 
+        id,
+        nome,
+        email,
+        senha,
+        foto_perfil AS fotoPerfil
+      FROM users
+    `);
+
+    return stmt.all();
   },
 
   buscarPorId(id) {
-    return users.find((u) => u.id === id) || null;
+    const stmt = db.prepare(`
+      SELECT 
+        id,
+        nome,
+        email,
+        senha,
+        foto_perfil AS fotoPerfil
+      FROM users
+      WHERE id = ?
+    `);
+
+    return stmt.get(id) || null;
   },
 
   buscarPorEmail(email) {
-    return users.find((u) => u.email === email) || null;
+    const stmt = db.prepare(`
+      SELECT 
+        id,
+        nome,
+        email,
+        senha,
+        foto_perfil AS fotoPerfil
+      FROM users
+      WHERE email = ?
+    `);
+
+    return stmt.get(email) || null;
   },
 
   existeEmail(email) {
-    return users.some((u) => u.email === email);
+    const stmt = db.prepare(`
+      SELECT 1
+      FROM users
+      WHERE email = ?
+    `);
+
+    return !!stmt.get(email);
   },
 
   inserir({ nome, email, senha, fotoPerfil = null }) {
-    const novo = {
-      id: nextId++,
+    const stmt = db.prepare(`
+      INSERT INTO users (
+        nome,
+        email,
+        senha,
+        foto_perfil
+      )
+      VALUES (?, ?, ?, ?)
+    `);
+
+    const result = stmt.run(nome, email, senha, fotoPerfil);
+
+    return {
+      id: result.lastInsertRowid,
       nome,
       email,
       senha,
       fotoPerfil,
     };
-
-    users.push(novo);
-    return novo;
   },
 
   atualizar(id, dados) {
-    const idx = users.findIndex((u) => u.id === id);
+    const usuarioAtual = this.buscarPorId(id);
 
-    if (idx === -1) {
+    if (!usuarioAtual) {
       return null;
     }
 
-    users[idx] = {
-      ...users[idx],
+    const usuarioAtualizado = {
+      ...usuarioAtual,
       ...dados,
-      id, // garante que o ID não seja alterado
+      id,
     };
 
-    return users[idx];
+    const stmt = db.prepare(`
+      UPDATE users
+      SET
+        nome = ?,
+        email = ?,
+        senha = ?,
+        foto_perfil = ?
+      WHERE id = ?
+    `);
+
+    stmt.run(
+      usuarioAtualizado.nome,
+      usuarioAtualizado.email,
+      usuarioAtualizado.senha,
+      usuarioAtualizado.fotoPerfil,
+      id,
+    );
+
+    return usuarioAtualizado;
   },
 
   remover(id) {
-    const tamanhoAntes = users.length;
+    const stmt = db.prepare(`
+      DELETE FROM users
+      WHERE id = ?
+    `);
 
-    users = users.filter((u) => u.id !== id);
+    const result = stmt.run(id);
 
-    return users.length < tamanhoAntes;
+    return result.changes > 0;
   },
 };

@@ -9,7 +9,11 @@ import { errorHandler } from "./middleware/errorHandler.js";
 const app = express();
 
 // --- Middleware global ---
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5500", "https://gamer-profile-b2uaina2d-thyagodnzs-projects.vercel.app"],
+  }),
+);
 app.use(express.json()); // parseia JSON no body
 app.use(logger); // loga toda requisição
 
