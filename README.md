@@ -2,11 +2,13 @@
 
 Sistema web para gerenciamento de biblioteca pessoal de jogos.
 
+## Como acessar
+✅👉 Clique no link: https://gamer-profile-b2uaina2d-thyagodnzs-projects.vercel.app/
+
 ## Funcionalidades
+- Cadastrar usuários
 - Adicionar jogos à biblioteca
-- Marcar jogos como favoritos 
-- Fazer review de jogos
-- Criar wishlist
+- Fazer review de jogo
 
 ## Classes do domínio
 
