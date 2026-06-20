@@ -1,51 +1,105 @@
-let reviews = [];
-let nextId = 1;
+import { db } from "../db.js";
 
 export const reviewModel = {
   listarTodos() {
-    return reviews;
+    const stmt = db.prepare(`
+      SELECT
+        id,
+        user_id AS userId,
+        game_id AS gameId,
+        comentario,
+        nota,
+        data_criacao AS dataCriacao
+      FROM reviews
+    `);
+
+    return stmt.all();
   },
 
   buscarPorId(id) {
-    return reviews.find((r) => r.id === id) || null;
+    const stmt = db.prepare(`
+      SELECT
+        id,
+        user_id AS userId,
+        game_id AS gameId,
+        comentario,
+        nota,
+        data_criacao AS dataCriacao
+      FROM reviews
+      WHERE id = ?
+    `);
+
+    return stmt.get(id) || null;
   },
 
   inserir({ userId, gameId, comentario, nota, dataCriacao }) {
-    const nova = {
-      id: nextId++,
+    const stmt = db.prepare(`
+      INSERT INTO reviews (
+        user_id,
+        game_id,
+        comentario,
+        nota,
+        data_criacao
+      )
+      VALUES (?, ?, ?, ?, ?)
+    `);
+
+    const result = stmt.run(userId, gameId, comentario, nota, dataCriacao);
+
+    return {
+      id: result.lastInsertRowid,
       userId,
       gameId,
       comentario,
       nota,
       dataCriacao,
     };
-
-    reviews.push(nova);
-
-    return nova;
   },
 
   atualizar(id, dados) {
-    const idx = reviews.findIndex((r) => r.id === id);
+    const reviewAtual = this.buscarPorId(id);
 
-    if (idx === -1) {
+    if (!reviewAtual) {
       return null;
     }
 
-    reviews[idx] = {
-      ...reviews[idx],
+    const reviewAtualizada = {
+      ...reviewAtual,
       ...dados,
       id,
     };
 
-    return reviews[idx];
+    const stmt = db.prepare(`
+      UPDATE reviews
+      SET
+        user_id = ?,
+        game_id = ?,
+        comentario = ?,
+        nota = ?,
+        data_criacao = ?
+      WHERE id = ?
+    `);
+
+    stmt.run(
+      reviewAtualizada.userId,
+      reviewAtualizada.gameId,
+      reviewAtualizada.comentario,
+      reviewAtualizada.nota,
+      reviewAtualizada.dataCriacao,
+      id,
+    );
+
+    return reviewAtualizada;
   },
 
   remover(id) {
-    const tamanhoAntes = reviews.length;
+    const stmt = db.prepare(`
+      DELETE FROM reviews
+      WHERE id = ?
+    `);
 
-    reviews = reviews.filter((r) => r.id !== id);
+    const result = stmt.run(id);
 
-    return reviews.length < tamanhoAntes;
+    return result.changes > 0;
   },
 };
