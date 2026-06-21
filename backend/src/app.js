@@ -8,14 +8,13 @@ import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
-// --- Middleware global ---
 app.use(
   cors({
-    origin: ["http://localhost:5500", "https://gamer-profile-b2uaina2d-thyagodnzs-projects.vercel.app"],
+    origin: ["http://localhost:5500", "https://gamer-profile-eight.vercel.app"],
   }),
 );
-app.use(express.json()); // parseia JSON no body
-app.use(logger); // loga toda requisição
+app.use(express.json());
+app.use(logger);
 
 // --- Rotas ---
 app.use("/users", usersRouter);

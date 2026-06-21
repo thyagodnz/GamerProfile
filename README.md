@@ -3,7 +3,7 @@
 Sistema web para gerenciamento de biblioteca pessoal de jogos.
 
 ## Como acessar
-✅👉 Clique no link: https://gamer-profile-b2uaina2d-thyagodnzs-projects.vercel.app/
+✅👉 Clique no link: https://gamer-profile-eight.vercel.app
 
 ## Funcionalidades
 - Cadastrar usuários
