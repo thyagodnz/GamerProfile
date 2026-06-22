@@ -5,6 +5,8 @@ import gamesRouter from "./routes/games.js";
 import reviewsRouter from "./routes/reviews.js";
 import { logger } from "./middleware/logger.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./docs/swagger.js";
 
 const app = express();
 
@@ -15,6 +17,8 @@ app.use(
 );
 app.use(express.json());
 app.use(logger);
+
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // --- Rotas ---
 app.use("/users", usersRouter);
