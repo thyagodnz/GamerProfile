@@ -1,14 +1,105 @@
 # Gamer Profile
 
-Sistema web para gerenciamento de biblioteca pessoal de jogos.
+Sistema web para gerenciamento de biblioteca pessoal de jogos
 
 ## Como acessar
-✅👉 Clique no link: https://gamer-profile-eight.vercel.app
+Frontend: https://gamer-profile-eight.vercel.app
+
+API: https://gamerprofile.onrender.com
+
+Documentação Swagger:
+https://gamerprofile.onrender.com/docs
 
 ## Funcionalidades
 - Cadastrar usuários
 - Adicionar jogos à biblioteca
 - Fazer review de jogo
+
+## Tecnologias utilizadas
+
+### Frontend
+- HTML5
+- CSS3
+- JavaScript (Vanilla JS)
+- Bootstrap 5
+
+### Backend
+- Node.js
+- Express.js
+- SQLite (banco de dados local)
+- Swagger/OpenAPI (documentação da API)
+
+### Deploy
+- Render (hospedagem da API)
+- Vercel (hospedagem do frontend)
+
+## Endpoints da API
+
+### Usuários
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/users` | Lista todos os usuários |
+| GET | `/users/:id` | Busca um usuário pelo ID |
+| POST | `/users` | Cadastra um novo usuário |
+| PUT | `/users/:id` | Atualiza os dados de um usuário |
+| DELETE | `/users/:id` | Remove um usuário |
+
+### Jogos
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/games` | Lista todos os jogos |
+| GET | `/games/:id` | Busca um jogo pelo ID |
+| POST | `/games` | Cadastra um novo jogo |
+| PUT | `/games/:id` | Atualiza os dados de um jogo |
+| DELETE | `/games/:id` | Remove um jogo |
+
+### Reviews
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| GET | `/reviews` | Lista todas as reviews |
+| GET | `/reviews/:id` | Busca uma review pelo ID |
+| POST | `/reviews` | Cria uma nova review relacionando usuário e jogo |
+| PUT | `/reviews/:id` | Atualiza uma review existente |
+| DELETE | `/reviews/:id` | Remove uma review |
+
+## Estrutura de pastas
+
+```
+gamer-profile/
+├── backend/
+│   ├── src/
+│   │   ├── controllers/
+│   │   ├── docs/
+│   │   ├── middleware/
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   ├── app.js
+│   │   ├── db.js
+│   │   └── server.js
+|   ├── .gitignore
+|   ├── package-lock.json
+│   └── package.json
+│
+├── frontend/
+│   ├── css/
+│   ├── js/
+│   │   ├── services/
+│   │   ├── ui/
+│   │   ├── api.js
+│   │   ├── config.js
+│   │   └── main.js
+│   └── index.html
+│
+└── README.md
+```
+
+## Arquitetura do projeto
+
+OBS.: O projeto foi modelado considerando cinco entidades de domínio. A implementação atual contempla User, Game e Review, enquanto Library e LibraryItem representam uma possível evolução futura.
 
 ## Classes do domínio
 
@@ -137,47 +228,4 @@ LibraryItem "*" --> "1" Game : referencia
 User "1" --> "*" Review : escreve
 Game "1" --> "*" Review : recebe
 
-```
-
-## Aplicação do DIP (Dependency Inversion Principle)
-
-Módulos de alto nível dependem de abstrações, e não de implementações concretas.
-
-## Estrutura de dependências
-
-### UserService
-
-```text
-UserService
-     ↓
-IUserRepository
-     ↑
-UserRepositoryMongo
-```
-
-- `UserService` depende da abstração `IUserRepository`
-- `UserRepositoryMongo` implementa essa interface
-
----
-
-### GameService
-
-```text
-GameService
-     ↓
-IGameRepository
-     ↑
-GameRepositoryMongo
-```
-
----
-
-### ReviewService
-
-```text
-ReviewService
-      ↓
-IReviewRepository
-      ↑
-ReviewRepositoryMongo
 ```
