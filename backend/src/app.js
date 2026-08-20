@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import authRouter from "./routes/auth.js";
 import usersRouter from "./routes/users.js";
 import gamesRouter from "./routes/games.js";
 import reviewsRouter from "./routes/reviews.js";
@@ -12,7 +13,11 @@ const app = express();
 
 app.use(
   cors({
-    origin: ["http://localhost:5500", "https://gamer-profile-eight.vercel.app"],
+    origin: [
+      "http://localhost:5500",
+      "http://localhost:5173",
+      "https://gamer-profile-2.vercel.app",
+    ],
   }),
 );
 app.use(express.json());
@@ -21,6 +26,7 @@ app.use(logger);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // --- Rotas ---
+app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/games", gamesRouter);
 app.use("/reviews", reviewsRouter);
@@ -30,7 +36,7 @@ app.get("/", (req, res) => {
   res.json({
     api: "Gamer Profile API",
     versao: "1.0.0",
-    rotas: ["/users", "/games", "/reviews"],
+    rotas: ["/auth", "/users", "/games", "/reviews"],
   });
 });
 
